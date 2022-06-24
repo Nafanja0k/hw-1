@@ -1,20 +1,24 @@
 import argparse
 import os
 import sys
+from enum import Enum
 
 
 class LS:
-    def get_path(mode: enumerate):
-        path = ""
-        return path
+    def get_path(self, mode: enumerate):
+        return mode.value
 
-    def get_content_list(path: str):
+    def get_content_list(self, path: str):
         '''
         returns a list of files and folders in the path passed
         :return: array
         '''
-        files_list = []
-        return files_list
+        content_list = []
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            content_list.extend(filenames)
+            content_list.extend(dirnames)
+            break # brake here to avoid iteration through the tree
+        return content_list
 
     def get_file_list(self, path: str):
         '''
@@ -22,6 +26,9 @@ class LS:
         :return: array
         '''
         content_list = []
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            content_list.extend(filenames)
+            break # brake here to avoid iteration through the tree
         return content_list
 
     def get_directory_list(self, path: str):
@@ -29,8 +36,11 @@ class LS:
         returns a list of folders in the path passed
         :return: array
         '''
-        directories_list = []
-        return directories_list
+        content_list = []
+        for (dirpath, dirnames, filenames) in os.walk(path):
+            content_list.extend(dirnames)
+            break # brake here to avoid iteration through the tree
+        return content_list
 
     def get_file_info(self, path: str, time_mode: enumerate):
         '''
@@ -76,10 +86,11 @@ class LS:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-r", action="store_true", help="path where to run the script from")
-    parser.add_argument("-s", action="store_true", help="path where the script is stored")
-    parser.add_argument("-p", action="store_true", help="set the path explicitly")
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument('--help', action='help', help='show help message and exit')
+    parser.add_argument("-r", help="path where to run the script from")
+    parser.add_argument("-s", help="path where the script is stored")
+    parser.add_argument("-p", help="set the path explicitly")
     parser.add_argument("-f", action="store_true", help="only files")
     parser.add_argument("-d", action="store_true", help="only directories")
     parser.add_argument("-v", action="store_true", help="show more details in output")
@@ -89,11 +100,24 @@ if __name__ == '__main__':
     parser.add_argument("-c", action="store_true", help="output format - CSV")
     parser.add_argument("-h", action="store_true", help="output format - HTML")
 
-    if len(sys.argv) == 1:
-        parser.print_help(sys.stderr)
-        sys.exit(1)
-
     args = parser.parse_args()
 
-    work_dir = os.curdir
+    ls = LS()
+    # TODO: fix this logic to handle defined path
+    script_path = args.s if args.s else os.path.abspath(os.path.dirname(__file__))
+    run_path = args.r if args.r else os.getcwd()
+    defined_path = args.p if args.p else ""
+    enum = Enum('DynamicEnum', {'SCRIPT_PATH': script_path, 'RUN_PATH': run_path, "DEFINED_PATH": defined_path})
+
+    content_run = ls.get_content_list(ls.get_path(enum.RUN_PATH))
+    print("Files in RUN_PATH {}".format(enum.RUN_PATH))
+    print(content_run)
+    content_script = ls.get_content_list(ls.get_path(enum.SCRIPT_PATH))
+    print("Files in SCRIPT_PATH {}".format(enum.RUN_PATH))
+    print(content_script)
+    content_defined = ls.get_content_list(ls.get_path(enum.DEFINED_PATH))
+    print("Files in DEFINED_PATH {}".format(enum.RUN_PATH))
+    print(content_defined)
+
+
     sys.exit(0)
