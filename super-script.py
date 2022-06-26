@@ -33,6 +33,7 @@ class LS:
     defined_path = ""
     timecode = Timecode.UNIX
     location = Path.RUN_PATH
+    verbosity = False
 
     def __init__(self, args):
         self.args = args
@@ -51,9 +52,7 @@ class LS:
             self.timecode = Timecode.UTC
 
         if self.args.v:
-            self.verbosity = 1
-        else:
-            self.verbosity = 0
+            self.verbosity = True
 
     def get_path(self, mode: enumerate):
         if mode == Path.RUN_PATH:
@@ -203,22 +202,23 @@ class LS:
         prints result to stdout
         :return:
         '''
-
         if self.verbosity:
             print("Files in {} {}".format(str(self.location), ls.get_path(self.location)))
-            for item in content:
+            for id, item in enumerate(content):
                 if self.timecode == Timecode.UTC:
-                    item["m_date"] = str(datetime.utcfromtimestamp(item["m_date"]))
-                    item["c_date"] = str(datetime.utcfromtimestamp(item["c_date"]))
-                print(json.dumps(item, indent=4))
+                    content[id]["m_date"] = str(datetime.utcfromtimestamp(item["m_date"]))
+                    content[id]["c_date"] = str(datetime.utcfromtimestamp(item["c_date"]))
+            df = pd.DataFrame(content)
+            with pd.option_context('display.expand_frame_repr', False):
+                print(df)
         else:
             for item in content:
-                print(content)
+                print(item["name"])
         return
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument('--help', action='help', help='show help message and exit')
+    # parser.add_argument('--help', action='help', help='show help message and exit')
     parser.add_argument("--location", type=lambda path: Path[path], choices=list(Path), help="choose location to check files from")
     parser.add_argument("--print", choices=["files", "directories", "all"], help="choose location to check files from")
     parser.add_argument("-f", action="store_true", help="only files")
@@ -252,7 +252,7 @@ if __name__ == '__main__':
         elif args.print == "files":
             content = ls.get_files_info(ls.get_path(ls.location))
         elif args.print == "directories":
-            content = ls.get_files_info(ls.get_path(ls.location))
+            content = ls.get_directories_info(ls.get_path(ls.location))
         ls.print_result(content, verbosity=ls.verbosity)
 
         #save to file if argument with output type is passed
