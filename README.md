@@ -316,7 +316,7 @@ Files in RUN_PATH ~/homework-1
 8     192  19017a9fc76e0850de1b0d5f689ecddf  user  2022-06-24 12:48:22.717120  2022-06-24 12:48:22.717120  directory           venv-p  /Users/user/Documents/homework-1  /Users/user/Documents/homework-1/...
 9     384  7ea0218ffc9efdb10c2151aec25dbd7f  user  2022-06-26 12:03:04.753989  2022-06-26 12:03:04.753989  directory             .git  /Users/user/Documents/homework-1  /Users/user/Documents/homework-1/...
 10    224  b2d26951b3bb45486c1a45dd5f4ce33a  user  2022-06-26 12:24:35.989021  2022-06-26 12:24:35.989021  directory            .idea  /Users/user/Documents/homework-1  /Users/user/Documents/homework-1/...
-~/homework-1 on master ⇡2 +3 !2 ?4 ❯ cat output.html                                                                                                                                        venv-p
+~/homework-1 > cat output.html                                                                                                                                        venv-p
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -455,4 +455,21 @@ Files in RUN_PATH ~/homework-1
     </tr>
   </tbody>
 </table>
+```
+
+#11
+```bash
+~/homework-1 >  python super-script.py --read output.txt                                                                 venv-p
+ size                             hash   owner                     m_date                     c_date      type            name                                          path                                                     full_path
+ 4509 1994197ceaaa4cd0badb48ffac9d0fb0 user 2022-06-26 12:38:29.042098 2022-06-26 12:38:29.042098      file     output.json /Users/user/Documents/homework-1     /Users/user/Documents/homework-1/output.json
+ 9335 28f7662daaf3061bddd44dc379f14689 user 2022-06-26 12:28:38.704131 2022-06-26 12:28:38.704131      file super-script.py /Users/user/Documents/homework-1 /Users/user/Documents/homework-1/super-script.py
+ 2471 ed5561767deb87e058a3befb4d040da9 user 2022-06-26 12:36:35.002013 2022-06-26 12:36:35.002013      file      output.csv /Users/user/Documents/homework-1      /Users/user/Documents/homework-1/output.csv
+18362 81461a7fb82b42ab7581a2d38224581e user 2022-06-26 12:40:07.770999 2022-06-26 12:40:07.770999      file       README.md /Users/user/Documents/homework-1       /Users/user/Documents/homework-1/README.md
+   21 49823a964744934bca2fc8b09bfc940c user 2022-06-24 12:53:55.952321 2022-06-24 12:53:55.952321      file      .gitignore /Users/user/Documents/homework-1      /Users/user/Documents/homework-1/.gitignore
+ 3408 79bc53cbca15e710bf6bc1a5d5a5d98f user 2022-06-26 11:57:13.336925 2022-06-26 11:57:13.336925      file     output.html /Users/user/Documents/homework-1     /Users/user/Documents/homework-1/output.html
+  408 264f46e4f2bfb405e512f693208bc4e9 user 2022-06-24 12:48:42.155170 2022-06-24 12:48:42.155170      file  homework-1.iml /Users/user/Documents/homework-1  /Users/user/Documents/homework-1/homework-1.iml
+    0 d41d8cd98f00b204e9800998ecf8427e user 2022-06-26 11:57:05.534574 2022-06-26 11:57:05.534574      file      output.txt /Users/user/Documents/homework-1      /Users/user/Documents/homework-1/output.txt
+  192 19017a9fc76e0850de1b0d5f689ecddf user 2022-06-24 12:48:22.717120 2022-06-24 12:48:22.717120 directory          venv-p /Users/user/Documents/homework-1          /Users/user/Documents/homework-1/venv-p
+  384 7ea0218ffc9efdb10c2151aec25dbd7f user 2022-06-26 12:03:04.753989 2022-06-26 12:03:04.753989 directory            .git /Users/user/Documents/homework-1            /Users/user/Documents/homework-1/.git
+  224 b2d26951b3bb45486c1a45dd5f4ce33a user 2022-06-26 12:24:35.989021 2022-06-26 12:24:35.989021 directory           .idea /Users/user/Documents/homework-1           /Users/user/Documents/homework-1/.idea
 ```

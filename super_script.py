@@ -131,26 +131,30 @@ class LS:
         return dir_info
 
     def save_as_txt(self, path: str, content: str):
+        content_json = json.loads(content)
         with open(path + "/output.txt", 'w') as file:
-            df = pd.DataFrame(content)
+            df = pd.DataFrame(content_json)
             file.write(df.to_string(header=True, index=False))
         return
 
     def save_as_csv(self, path: str, content: str):
+        content_json = json.loads(content)
         with open(path + "/output.csv", 'w') as file:
-            dict_writer = csv.DictWriter(file, content[0].keys())
+            dict_writer = csv.DictWriter(file, content_json[0].keys())
             dict_writer.writeheader()
-            dict_writer.writerows(content)
+            dict_writer.writerows(content_json)
         return
 
     def save_as_json(self, path: str, content: str):
+        content_json = json.loads(content)
         with open(path + "/output.json", 'w') as file:
-            json.dump(content, file, indent=4, sort_keys=True)
+            json.dump(content_json, file, indent=4, sort_keys=True)
         return
 
     def save_as_html(self, path: str, content: str):
+        content_json = json.loads(content)
         with open(path + "/output.html", 'w') as file:
-            df = pd.DataFrame(content)
+            df = pd.DataFrame(content_json)
             file.write(df.to_html(header=True, index=False))
         return
 
@@ -163,6 +167,8 @@ class LS:
 
     def get_report_content(self, report_path: str):
         content = ""
+        with open(report_path, 'r') as file:
+            content = file.read()
         return content
 
     def get_directories_info(self, path: str):
@@ -216,11 +222,14 @@ class LS:
                 print(item["name"])
         return
 
-if __name__ == '__main__':
+
+def create_parser():
     parser = argparse.ArgumentParser(add_help=False)
     # parser.add_argument('--help', action='help', help='show help message and exit')
     parser.add_argument("--location", type=lambda path: Path[path], choices=list(Path), help="choose location to check files from")
     parser.add_argument("--print", choices=["files", "directories", "all"], help="choose location to check files from")
+    parser.add_argument("--read", help="print report`'s content")
+
     parser.add_argument("-f", action="store_true", help="only files")
     parser.add_argument("-d", action="store_true", help="only directories")
 
@@ -243,9 +252,14 @@ if __name__ == '__main__':
     group_verbosity.add_argument("-v", action="store_true", help="show more details in output")
     group_verbosity.add_argument("-l", action="store_true", help="show less details in output")
 
-    args = parser.parse_args()
+    return parser
 
+if __name__ == '__main__':
+
+    parser = create_parser()
+    args = parser.parse_args()
     ls = LS(args)
+
     if args.print:
         if args.print == "all":
             content = ls.get_contents_info(ls.get_path(ls.location))
@@ -257,12 +271,13 @@ if __name__ == '__main__':
 
         #save to file if argument with output type is passed
         if args.t:
-            ls.save_as_txt(path=ls.script_path, content=content)
+            ls.save_as_txt(path=ls.script_path, content=json.dumps(content))
         elif args.j:
-            ls.save_as_json(path=ls.script_path, content=content)
+            ls.save_as_json(path=ls.script_path, content=json.dumps(content))
         elif args.c:
-            ls.save_as_csv(path=ls.script_path, content=content)
+            ls.save_as_csv(path=ls.script_path, content=json.dumps(content))
         elif args.h:
-            ls.save_as_html(path=ls.script_path, content=content)
-
+            ls.save_as_html(path=ls.script_path, content=json.dumps(content))
+    elif args.read:
+        print(str(ls.get_report_content(args.read)))
     sys.exit(0)
