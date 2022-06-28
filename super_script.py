@@ -209,7 +209,7 @@ class LS:
         :return:
         '''
         if self.verbosity:
-            print("Files in {} {}".format(str(self.location), ls.get_path(self.location)))
+            print("Files in {} {}".format(str(self.location), self.get_path(self.location)))
             for id, item in enumerate(content):
                 if self.timecode == Timecode.UTC:
                     content[id]["m_date"] = str(datetime.utcfromtimestamp(item["m_date"]))

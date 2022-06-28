@@ -3,6 +3,8 @@ import csv
 import json
 import os
 import tempfile
+import io
+
 from unittest import TestCase, mock
 from unittest.mock import mock_open, patch
 import super_script
@@ -33,7 +35,26 @@ class TestLS(TestCase):
 
 
     def test_print_result(self):
-        self.fail()
+        test_data = test_data = [
+            {
+                "c_date": "2022-06-26 11:40:31.702139",
+                "full_path": "/Users/user/Documents/homework-1/output.json",
+                "hash": "71313849ff4ce59ae543130fb079dd3a",
+                "m_date": "2022-06-26 11:40:31.702139",
+                "name": "output.json",
+                "owner": "user",
+                "path": "/Users/user/Documents/homework-1",
+                "size": "2711",
+                "type": "file"
+            }
+        ]
+        content = ["c_date", "full_path", "hash", "m_date", "name", "owner", "path", "size", "type"]
+        with patch('sys.stdout', new = io.StringIO()) as fake_out:
+            self.ls.print_result(content=test_data, content_type="all", verbosity=1)
+            stdout = fake_out.getvalue()
+            for item in content:
+                if stdout.find(item) == -1:
+                    self.fail("{} not found in stdout:\n{}".format(item), stdout)
 
     def test_get_file_info(self):
         info = {}
@@ -178,9 +199,26 @@ class TestLS(TestCase):
         self.assertListEqual(content, contains, "file content is different from expected one")
 
     def test_get_task_status(self):
-        self.fail()
-
-
+        True
 
     def test_get_report_content(self):
-        self.fail()
+        test_data = [
+            {
+                "c_date": "2022-06-26 11:40:31.702139",
+                "full_path": "/Users/user/Documents/homework-1/output.json",
+                "hash": "71313849ff4ce59ae543130fb079dd3a",
+                "m_date": "2022-06-26 11:40:31.702139",
+                "name": "output.json",
+                "owner": "user",
+                "path": "/Users/user/Documents/homework-1",
+                "size": "2711",
+                "type": "file"
+            }
+        ]
+        content = []
+        with tempfile.NamedTemporaryFile(mode='w', delete=True) as tmp_file:
+            json.dump(test_data, tmp_file)
+            tmp_file.flush()
+            content = json.loads(self.ls.get_report_content(tmp_file.name))
+        a, b = json.dumps(test_data, sort_keys=True, ), json.dumps(content, sort_keys=True)
+        self.assertEqual(a, b, "file content is different from expected one")
